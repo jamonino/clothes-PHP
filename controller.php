@@ -32,7 +32,7 @@
 
  //Obtenemos id (si es el caso) y entidad
  if(end($connectionURI)>0) {
-    $id = $connectionURI[count($connectionURI)];
+    $param = $connectionURI[count($connectionURI)];
     $entity = $connectionURI[count($connectionURI) - 1];
  } else {
     $entity = $connectionURI[count($connectionURI)];
@@ -42,10 +42,10 @@
 
   switch ($entity) {
     case 'admin':
-        adminService($_SERVER['REQUEST_METHOD'], $bodyRequest);
+        adminService($_SERVER['REQUEST_METHOD'], $bodyRequest,$param);
         break;
     case 'user':
-        userService($_SERVER['REQUEST_METHOD'], $bodyRequest);
+        userService($_SERVER['REQUEST_METHOD'], $bodyRequest,$param);
         break;
     default:
         break;

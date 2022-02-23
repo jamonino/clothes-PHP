@@ -1,7 +1,7 @@
 <?php
 
  
-function adminService($requestMethod,$bodyRequest){
+function adminService($requestMethod,$bodyRequest,$param){
     switch ($requestMethod) {
         case 'POST':
             $myDb = new DB();
@@ -13,7 +13,7 @@ function adminService($requestMethod,$bodyRequest){
 
         case 'GET':
             $myDb = new DB();
-            if(isset($id)) {
+            if(isset($param)) {
                 return_response(405, "Method Not Allowed", null);
             }else{
                 return_response(200, "OK", new Response(ResponseCodes::$OK,Product::DB_selectAll($myDb->connection)));
@@ -21,11 +21,11 @@ function adminService($requestMethod,$bodyRequest){
             break;
 
         case 'PUT':
-            if(isset($id)) {
+            if(isset($param)) {
                 $myDb = new DB();
                 $productToPut = new Product;
                 $productToPut->jsonConstruct($bodyRequest);
-                $productToPut->setId($id);
+                $productToPut->setId($param);
                 $productToPut->DB_update($myDb->connection);
                 return_response(200, "OK", new Response(ResponseCodes::$OK));
             }else{

@@ -1,10 +1,10 @@
 <?php
 
  
-function userService($requestMethod,$bodyRequest){
+function userService($requestMethod,$bodyRequest,$param){
     switch ($requestMethod) {
         case 'POST':
-            if(!isset($id)) {
+            if(!isset($param)) {
                 $myDb = new DB();
                 $productToPut = new Product;
                 $productToPut->jsonConstruct($bodyRequest);
