@@ -12,7 +12,7 @@ class Product implements \JsonSerializable {
     private int $quantity;
     
     
-    public function parametersConstruct(int $id, string $name,int $stock,int $price,int $gender) {
+    public function parametersConstruct(int $id, string $name,int $price,int $stock,int $gender) {
         $this->name = $name;
         $this->stock = $stock;
         $this->price = $price;
@@ -37,7 +37,7 @@ class Product implements \JsonSerializable {
         pg_free_result($result);
     }
     
-     public static function DB_selectAll($dbconn){
+    public static function DB_selectAll($dbconn){
         pg_prepare($dbconn, "my_query_SELECTALL", 'SELECT id,name,price,stock,gender FROM products;');
         $result = pg_execute($dbconn, "my_query_SELECTALL",array());
         $products = array();
@@ -90,7 +90,7 @@ class Product implements \JsonSerializable {
         return $this;
     }
     
-    public function buyProduct_DB($dbconn){
+    public function DB_buyProduct($dbconn){
         pg_prepare($dbconn, "my_query_BUYPRODUCT", 'UPDATE products SET stock = stock - $1 WHERE id = $2 AND stock >= $1 ;');
         $result = pg_execute($dbconn, "my_query_BUYPRODUCT",array($this->quantity,$this->id));
         
@@ -100,6 +100,20 @@ class Product implements \JsonSerializable {
             return ResponseCodes::$OK;
         }
         pg_free_result($result);
+    }
+    
+    public static function DB_selectAllGender($dbconn,$gender){
+        pg_prepare($dbconn, "my_query_SELECTALLGENDER", 'SELECT id,name,price,stock,gender FROM products WHERE gender = $1;');
+        $result = pg_execute($dbconn, "my_query_SELECTALLGENDER",array($gender));
+        $products = array();
+        while ($row = pg_fetch_row($result)) {
+            $newProduct = new Product;
+            $newProduct->parametersConstruct($row[0],$row[1],$row[2],$row[3],$row[4]);
+            $products[]=$newProduct;
+        }
+        // Free resultset
+        pg_free_result($result);
+        return $products;
     }
        
     
@@ -158,8 +172,4 @@ class Product implements \JsonSerializable {
     public function setQuantity(int $quantity): void {
         $this->quantity = $quantity;
     }
-
-
-
-
 }

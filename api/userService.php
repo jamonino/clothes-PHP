@@ -8,7 +8,7 @@ function userService($requestMethod,$bodyRequest,$param){
                 $myDb = new DB();
                 $productToPut = new Product;
                 $productToPut->jsonConstruct($bodyRequest);
-                $responseCode = $productToPut->buyProduct_DB($myDb->connection);
+                $responseCode = $productToPut->DB_buyProduct($myDb->connection);
                 return_response(200, "OK", new Response($responseCode));
             }else{
                 return_response(405, "Method Not Allowed", null);
@@ -17,11 +17,12 @@ function userService($requestMethod,$bodyRequest,$param){
             break;
 
         case 'GET':
-            return_response(405, "Method Not Allowed", null);
-            break;
-
-        case 'PUT':
-            return_response(405, "Method Not Allowed", null);
+            if(!isset($param)) {
+                return_response(405, "Method Not Allowed", null,);
+            }else{
+                $myDb = new DB();
+                return_response(200, "OK", new Response(ResponseCodes::$OK,Product::DB_selectAllGender($myDb->connection, $param)));
+            }
             break;
 
         default:
